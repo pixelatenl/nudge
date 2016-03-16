@@ -63,7 +63,7 @@
  */
 [class*="--"]:not([class*=" "]) {
   @include _nudge-message();
-    
+
   &:after {
     content: "ERROR: Cannot have a Modifier (i.e. `." attr(class) "`) without a Block.";
   }
@@ -87,7 +87,10 @@
  * no control over.
  */
 [class*="_"] {
-  @include _nudge-message('warn');
+
+    &:not([class*="__"]) {
+            @include _nudge-message('warn');
+    }
 
   &:after {
     content: "WARN: Do not use underscores to delimit strings";
@@ -156,7 +159,7 @@ $_nudge-alphabet: ('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','
 // it elsewhere earlier in the project (e.g. in a `_settings.deprecations.scss`
 // file).
 
-$nudge-deprecated-selectors-list: (
+$nudge-deprecated-selectors: (
   '.deprecated-class': '.replacement-class',
   '.deprecated-class-with-no-replaement': null,
 ) !default;
@@ -165,17 +168,15 @@ $nudge-deprecated-selectors-list: (
   @include _nudge-message('warn');
 }
 
-@each $selector, $replacement in $nudge-deprecated-selectors-list {
+@each $selector, $replacement in $nudge-deprecated-selectors {
   #{$selector} {
     @extend %_nudge-deprecated-selectors-shared-styles;
 
   &:after {
     @if ($replacement != null) {
       content: "WARN: Selector `#{$selector}` is deprecated, use `#{$replacement}` instead.";
-      @warn "Selector `#{$selector}` is deprecated, use `#{$replacement}` instead.";
     } @else {
       content: "WARN: Selector `#{$selector}` is deprecated.";
-      @warn "Selector `#{$selector}` is deprecated.";
     }
   }
 
